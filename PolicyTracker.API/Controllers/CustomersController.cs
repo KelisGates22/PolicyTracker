@@ -61,7 +61,7 @@ public class CustomersController : ControllerBase
      * @returns The customer details along with their associated policies.
      */
     [HttpGet("{id}")]
-    public async Task<IActionResult> GetById(int id)
+    public async Task<IActionResult> GetById(Guid id)
     {
         _logger.LogInformation("Fetching customer {CustomerId}", id);
 

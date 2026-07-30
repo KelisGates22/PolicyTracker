@@ -2,8 +2,8 @@
 {
     public class Policy
     {
-        public int Id { get; set; }
-        public int CustomerId { get; set; }
+        public Guid Id { get; set; }
+        public Guid CustomerId { get; set; }
         public string PolicyNumber { get; set; } = string.Empty;
         public string PolicyType { get; set; } = string.Empty;
         public DateTime StartDate { get; set; }
