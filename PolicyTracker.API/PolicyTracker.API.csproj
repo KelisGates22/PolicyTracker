@@ -21,4 +21,8 @@
     <Folder Include="Data\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\PolicyTracker.PremiumCalc\PolicyTracker.PremiumCalc.vbproj" />
+  </ItemGroup>
+
 </Project>
