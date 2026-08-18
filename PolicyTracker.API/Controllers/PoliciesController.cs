@@ -13,6 +13,12 @@ public class PoliciesController : ControllerBase
     private readonly PolicyTrackerDbContext _db;
     private readonly ILogger<PoliciesController> _logger;
 
+    /** Initializes a new instance of the PoliciesController class.
+     * 
+     * @param db The PolicyTrackerDbContext instance.
+     * @param logger The ILogger instance for logging.
+     * 
+     */
     public PoliciesController(PolicyTrackerDbContext db, ILogger<PoliciesController> logger)
     {
         _db = db;
