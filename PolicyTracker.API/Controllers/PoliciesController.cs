@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PolicyTracker.API.Data;
+using PolicyTracker.PremiumCalc;
 
 namespace PolicyTracker.API.Controllers;
 
@@ -80,6 +81,14 @@ public class PoliciesController : ControllerBase
             return NotFound();
         }
 
+        var calculator = new PremiumCalculator();
+        var renewalEstimate = calculator.CalculatePremium(
+            policy.PolicyType,
+            policy.Customer.State,
+            policy.Claims.Count
+        );
+
+
         return Ok(new
         {
             policy.Id,
@@ -87,6 +96,7 @@ public class PoliciesController : ControllerBase
             policy.PolicyType,
             policy.Status,
             policy.PremiumAmount,
+            RenewalEstimate = renewalEstimate,
             policy.StartDate,
             policy.EndDate,
             Customer = new
