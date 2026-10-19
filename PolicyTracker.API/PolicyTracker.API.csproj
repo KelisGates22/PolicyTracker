@@ -30,6 +30,9 @@
     <None Update="Reports\OpenClaimsReport.rdlc">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+	<None Update="Reports\PoliciesByStateReport.rdlc">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

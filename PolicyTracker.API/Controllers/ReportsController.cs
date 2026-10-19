@@ -10,6 +10,9 @@ namespace PolicyTracker.API.Controllers;
 [Route("api/[controller]")]
 public class ReportsController : ControllerBase
 {
+
+    #region Fields and Constructor
+
     private readonly PolicyTrackerDbContext _db;
     private readonly ILogger<ReportsController> _logger;
     private readonly IWebHostEnvironment _env;
@@ -21,7 +24,15 @@ public class ReportsController : ControllerBase
         _env = env;
     }
 
-    // GET /api/reports/open-claims
+    #endregion
+
+    #region Endpoints
+
+    /** Generates a report of all open claims and returns it as a PDF file.
+     * GET /api/reports/open-claims
+     * 
+     * @returns A PDF file containing the open claims report.
+     */
     [HttpGet("open-claims")]
     public async Task<IActionResult> OpenClaimsReport()
     {
@@ -52,5 +63,40 @@ public class ReportsController : ControllerBase
         var pdfBytes = report.Render("PDF");
 
         return File(pdfBytes, "application/pdf", "OpenClaimsReport.pdf");
+
     }
+
+    /** Generates a report chart of policies grouped by state and returns it as a PDF file.
+     * GET /api/reports/policies-by-state
+     * 
+     * @returns A PDF file containing the policies by state report.
+     */
+    [HttpGet("policies-by-state")]
+    public async Task<IActionResult> PoliciesByStateReport()
+    {
+        _logger.LogInformation("Generating Policies By State Report");
+
+        var data = await _db.Policies
+            .GroupBy(p => p.Customer.State)
+            .Select(g => new PolicyByStateItem
+            {
+                State = g.Key,
+                PolicyCount = g.Count()
+            })
+            .OrderBy(x => x.State)
+            .ToListAsync();
+
+        var reportPath = Path.Combine(_env.ContentRootPath, "Reports", "PoliciesByStateReport.rdlc");
+
+        using var report = new LocalReport();
+        report.ReportPath = reportPath;
+        report.DataSources.Add(new ReportDataSource("PolicyByStateData", data));
+
+        var pdfBytes = report.Render("PDF");
+
+        return File(pdfBytes, "application/pdf", "PoliciesByStateReport.pdf");
+    }
+
+    #endregion
+
 }
