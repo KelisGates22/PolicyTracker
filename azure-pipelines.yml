@@ -1,0 +1,46 @@
+trigger:
+  branches:
+    include:
+      - develop
+      - master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  buildConfiguration: 'Release'
+
+steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET 10 SDK'
+    inputs:
+      packageType: 'sdk'
+      version: '10.x'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Restore packages'
+    inputs:
+      command: 'restore'
+      projects: 'PolicyTracker.sln'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Build solution'
+    inputs:
+      command: 'build'
+      projects: 'PolicyTracker.sln'
+      arguments: '--configuration $(buildConfiguration) --no-restore'
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Publish API'
+    inputs:
+      command: 'publish'
+      publishWebProjects: false
+      projects: 'PolicyTracker.API/PolicyTracker.API.csproj'
+      arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+      zipAfterPublish: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Save the build output'
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'PolicyTrackerAPI'
